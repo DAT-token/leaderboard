@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>$DAT Leaderboard</title>
+	    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+		<style>
+            body { background-color: #eff3f8; color: #19233c; }
+            .toss-body { background-color: #ffffff; }
+            .btn { background-color: #fe815f; color: #ffffff; }
+            .btn:hover { background-color: #ff825eb3;}
+            .icon-sun-filled { display: none;}
+            .icon-moon-filled { display: block;}
+            a {color: #fe815f;}
+            a:hover {color: #ff825eb3;}
+            thead {--bs-table-bg: #fe815f; --bs-table-color: white; }
+            tbody {font-family: monospace;}
+            body.theme-dark { background-color: #252a37; }
+            body.theme-dark .toss-body { background-color: #2e3343; color: #eff3f8; }
+            .theme-dark .icon-moon-filled { display: none; }
+            .theme-dark .icon-sun-filled { display: block; }
+            .mode-toggle svg { cursor: pointer; }
+            .theme-dark .table {--bs-table-bg: #2e3343; --bs-table-color: #eff3f8; }
+		</style>
+  </head>
+  <body>
+
+	<div class="container my-5">
+		<div class="position-relative p-5 text-center toss-body rounded-2 shadow-sm">
+			<div class="position-absolute top-0 end-0 p-3 m-3 mode-toggle">
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon-sun-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"></path><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7"></path></svg>
+				<svg xmlns="http://www.w3.org/2000/svg" class="icon-moon-filled" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path></svg>
+			</div>
+			<img class="rounded-2 mb-4" src="https://raw.githubusercontent.com/DeBankDeFi/logo/master/DeBank/debank-icon.svg"  width="100" height="100">
+			<h1>$DAT Leaderboard</h1>
+			<p class="col-lg-7 pb-2 mx-auto">How to get $DAT? Play DeBank Toss, each game pays $DAT! <a class="fw-bold" href="https://debanknft.github.io/toss/">Play Now!</a></p>
+            <div class="col-lg-7 mx-auto table-responsive rounded-2">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Wallet</th>
+                        <th scope="col">DAT</th>
+                    </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                    </tbody>
+                </table>
+            </div>
+		</div>
+	</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+    <script>
+document.addEventListener("DOMContentLoaded", function () {
+    // URL of your JSON data
+    const apiUrl = "https://explorer.testnet.debank.com/api?module=token&action=getTokenHolders&contractaddress=0x6c244B85Df9C2648fcd91521BCa84dD1170e2146";
+
+    // Fetch the JSON data from the URL
+    fetch(apiUrl)
+        .then((response) => response.json())
+        .then((data) => {
+            // Check if the status is "1" (assuming "1" indicates success)
+            if (data.status === "1") {
+                const result = data.result;
+
+                // Get the table body element
+                const tableBody = document.getElementById("data-table-body");
+
+                // Clear existing table rows
+                tableBody.innerHTML = "";
+
+                // Initialize a counter for displayed rows
+                let counter = 0;
+
+                // Loop through the data and create table rows
+                result.forEach((item) => {
+                    // Check if the address is not in the exclusion list
+                    if (item.address !== "0x5bb73e04b810527b14b87c37eff3d62481f2d416" && item.address !== "0xddc3e711b38476102948e094a9a1e79b4d8ea83e") {
+                        counter++; // Increment the counter for each valid row
+                        const row = document.createElement("tr");
+                        const valueInBillions = Math.floor(parseInt(item.value) / 1000000000000000000); // Divide and round down
+                        row.innerHTML = `
+                            <th scope="row">${counter}</th>
+                            <td>${item.address}</td>
+                            <td>${valueInBillions.toLocaleString()}</td> <!-- Display with commas -->
+                        `;
+                        tableBody.appendChild(row);
+                    }
+                });
+            } else {
+                console.error("Error: Unable to fetch data.");
+            }
+        })
+        .catch((error) => {
+            console.error("Error: " + error);
+        });
+});
+
+
+    </script>
+ 
+	<script>
+		// Select the button
+		const btn = document.querySelector(".mode-toggle");
+		// Select the theme preference from localStorage
+		const currentTheme = localStorage.getItem("theme");
+		// If the current theme in localStorage is "dark"...
+		if (currentTheme == "dark") {
+			// ...then use the .dark-theme class
+			document.body.classList.add("theme-dark");
+		}
+		// Listen for a click on the button 
+		btn.addEventListener("click", function () {
+			// Toggle the .dark-theme class on each click
+			document.body.classList.toggle("theme-dark");
+			// Let's say the theme is equal to light
+			let theme = "light";
+			// If the body contains the .dark-theme class...
+			if (document.body.classList.contains("theme-dark")) {
+				// ...then let's make the theme dark
+				theme = "dark";
+			}
+			// Then save the choice in localStorage
+			localStorage.setItem("theme", theme);
+		});
+	</script>
+  </body>
+</html>
