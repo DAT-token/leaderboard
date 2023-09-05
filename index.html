@@ -60,46 +60,56 @@ document.addEventListener("DOMContentLoaded", function () {
     // URL of your JSON data
     const apiUrl = "https://explorer.testnet.debank.com/api?module=token&action=getTokenHolders&contractaddress=0x6c244B85Df9C2648fcd91521BCa84dD1170e2146";
 
-    // Fetch the JSON data from the URL
-    fetch(apiUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            // Check if the status is "1" (assuming "1" indicates success)
-            if (data.status === "1") {
-                const result = data.result;
+    // Get the table body element
+    const tableBody = document.getElementById("data-table-body");
 
-                // Get the table body element
-                const tableBody = document.getElementById("data-table-body");
+    // Initialize a counter for displayed rows
+    let counter = 0;
 
-                // Clear existing table rows
-                tableBody.innerHTML = "";
+    // Function to fetch and append data
+    function fetchData(page = 1) {
+        // Fetch the JSON data for the specified page
+        fetch(apiUrl + `&page=${page}`)
+            .then((response) => response.json())
+            .then((data) => {
+                // Check if the status is "1" (assuming "1" indicates success)
+                if (data.status === "1") {
+                    const result = data.result;
 
-                // Initialize a counter for displayed rows
-                let counter = 0;
+                    // If there is data for this page
+                    if (result.length > 0) {
+                        // Loop through the data and create table rows
+                        result.forEach((item) => {
+                            // Check if the address is not in the exclusion list
+                            if (item.address !== "0x5bb73e04b810527b14b87c37eff3d62481f2d416" && item.address !== "0xddc3e711b38476102948e094a9a1e79b4d8ea83e") {
+                                counter++; // Increment the counter for each valid row
+                                const row = document.createElement("tr");
+                                const valueInBillions = Math.floor(parseInt(item.value) / 1000000000000000000); // Divide and round down
+                                row.innerHTML = `
+                                    <th scope="row">${counter}</th>
+                                    <td>${item.address}</td>
+                                    <td>${valueInBillions.toLocaleString()}</td> <!-- Display with commas -->
+                                `;
+                                tableBody.appendChild(row);
+                            }
+                        });
 
-                // Loop through the data and create table rows
-                result.forEach((item) => {
-                    // Check if the address is not in the exclusion list
-                    if (item.address !== "0x5bb73e04b810527b14b87c37eff3d62481f2d416" && item.address !== "0xddc3e711b38476102948e094a9a1e79b4d8ea83e") {
-                        counter++; // Increment the counter for each valid row
-                        const row = document.createElement("tr");
-                        const valueInBillions = Math.floor(parseInt(item.value) / 1000000000000000000); // Divide and round down
-                        row.innerHTML = `
-                            <th scope="row">${counter}</th>
-                            <td>${item.address}</td>
-                            <td>${valueInBillions.toLocaleString()}</td> <!-- Display with commas -->
-                        `;
-                        tableBody.appendChild(row);
+                        // Fetch the next page of data
+                        fetchData(page + 1);
                     }
-                });
-            } else {
-                console.error("Error: Unable to fetch data.");
-            }
-        })
-        .catch((error) => {
-            console.error("Error: " + error);
-        });
+                } else {
+                    console.error("Error: Unable to fetch data.");
+                }
+            })
+            .catch((error) => {
+                console.error("Error: " + error);
+            });
+    }
+
+    // Start fetching data for the first page
+    fetchData();
 });
+
 
 
     </script>
