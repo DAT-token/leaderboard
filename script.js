@@ -448,7 +448,12 @@ async function getKing() {
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
   const contract = new ethers.Contract(contractAddress, abi, signer);
-  const king = await contract.getKing();
+  king = await contract.getKing();
+  const response = await fetch(`https://api.debank.com/user?id=${king}`);
+  if (response.ok) {
+    const data = await response.json();
+    king = data.data.user.web3_id;
+  }
   document.getElementById('throne-holder').replaceChildren(king);
 }
 
