@@ -1,5 +1,5 @@
-contractAddress = '0x8504573aA4C42Cc6014670ab0F55eE2bC32F0B4f';
-datAddress ='0x96963dAC8fd00A3835FDe9385aA3e395e8EDeEc1';
+contractAddress = '0xa7bB18216eFE685402f0D680a4cd7f5e344a0a7A';
+datAddress ='0x6c244B85Df9C2648fcd91521BCa84dD1170e2146';
 abi = [
     {
       "anonymous": false,
@@ -401,8 +401,8 @@ datAbi = [
   ];
 
 async function checkChain () {
-  // const targetNetworkId = '0x1ed816'
-  const targetNetworkId = '0x539'
+  const targetNetworkId = '0x1ed816'
+  // const targetNetworkId = '0x539'
   const currentChainId = await window.ethereum.request({
 	      method: 'eth_chainId'
 	    })
@@ -412,6 +412,7 @@ async function checkChain () {
 	  document.getElementById('chain').hidden = true
 	  document.getElementById('approve-dat').hidden = false
 	  this.getAmount();
+	  this.getKing(); 
 	  // this.getDATBalance()
   }
 }
@@ -440,6 +441,17 @@ async function getAmount() {
   this.checkAllowance();
 }
 
+
+async function getKing() {
+  const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
+  // const provider = new ethers.providers.Web3Provider(window.ethereum)
+  await provider.send('eth_requestAccounts', []);
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract(contractAddress, abi, signer);
+  const king = await contract.getKing();
+  document.getElementById('throne-holder').replaceChildren(king);
+}
+
 async function checkAllowance() {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
   // const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -450,7 +462,7 @@ async function checkAllowance() {
   const contract = new ethers.Contract(datAddress, datAbi, signer);
   need = document.getElementById('throne-input').value;
   const allowed = await contract.allowance(address, contractAddress);
-  if (allowed >= ethers.utils.parseEther(need)) {
+  if (allowed.gte(ethers.utils.parseEther(need))) {
 	  document.getElementById('chain').hidden = true;
 	  document.getElementById('approve-dat').hidden = true;
 	  document.getElementById('throne-button').hidden = false;
@@ -476,23 +488,24 @@ async function approve() {
   document.getElementById('approve-dat').disabled = true;
 }
 
-async function play () {
+async function dethrone () {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider())
   // const provider = new ethers.providers.Web3Provider(window.ethereum)
   await provider.send('eth_requestAccounts', [])
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
-  const options = { value: ethers.utils.parseEther('0.001'), gasLimit: 33000 }
-  const res = await contract.play(options)
-  const a = document.createElement('a')
-  a.title = 'Waiting for tx'
-  a.target = 'about:blank'
-  a.href = `https://explorer.testnet.debank.com/tx/${res.hash}`
-  a.replaceChildren('Waiting for transaction to confirm... ⧉')
-  document.getElementById('event').classList = 'alert alert-info alert-dismissible fade show'
-  document.getElementById('event').replaceChildren(a)
+  const value = document.getElementById('throne-input').value;
+  const res = await contract.dethrone(ethers.utils.parseEther(value));
+  // const a = document.createElement('a')
+  // a.title = 'Waiting for tx'
+  // a.target = 'about:blank'
+  // a.href = `https://explorer.testnet.debank.com/tx/${res.hash}`
+  // a.replaceChildren('Waiting for transaction to confirm... ⧉')
+  // document.getElementById('event').classList = 'alert alert-info alert-dismissible fade show'
+  // document.getElementById('event').replaceChildren(a)
   // res.wait();
 }
+
 
 async function getApproval () {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider())
@@ -500,32 +513,26 @@ async function getApproval () {
   await provider.send('eth_requestAccounts', [])
   provider.pollingInterval = 500
   const signer = provider.getSigner()
-  const contract = new ethers.Contract(contractAddress, datAbi, signer)
-  contract.on('Approval', (r, message) => {
-	  console.log(message)
+  const contract = new ethers.Contract(datAddress, datAbi, signer)
+  contract.on('Approval', (owner, spender, value) => {
+	  console.log(owner, spender, value)
 	  this.checkAllowance();
   })
 }
 
-async function getDATTransaction () {
+async function getNewKing () {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider())
   // const provider = new ethers.providers.Web3Provider(window.ethereum)
   await provider.send('eth_requestAccounts', [])
   provider.pollingInterval = 500
   const signer = provider.getSigner()
-  const address = await signer.getAddress();
   const contract = new ethers.Contract(contractAddress, abi, signer)
-  contract.on('TokenTransferred', (token, to, amount) => {
-	  if (to == address) {
-	    document.getElementById('event').classList = 'alert alert-info alert-dismissible fade show'
-	    document.getElementById('event').replaceChildren("DAT token transferred !")
-	    this.getDATBalance();
-    }
+  contract.on('NewKing', (king) => {
+	  console.log(king)
+	  this.getKing();
   })
 }
 
+
 getApproval();
-
-
-// getResult();
-// getDATTransaction();
+getNewKing();
