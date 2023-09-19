@@ -453,6 +453,7 @@ async function getKing() {
   if (response.ok) {
     const data = await response.json();
     king = data.data.user.web3_id;
+    document.getElementById('throne-bio').replaceChildren(data.data.user.bio);
   }
   document.getElementById('throne-holder').replaceChildren(king);
 }
