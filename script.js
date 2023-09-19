@@ -444,19 +444,26 @@ async function getAmount() {
 
 async function getKing() {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
-  // const provider = new ethers.providers.Web3Provider(window.ethereum)
   await provider.send('eth_requestAccounts', []);
   const signer = provider.getSigner();
   const contract = new ethers.Contract(contractAddress, abi, signer);
   king = await contract.getKing();
   const response = await fetch(`https://api.debank.com/user?id=${king}`);
+
   if (response.ok) {
     const data = await response.json();
+    const kingAvatarUrl = data.data.user.logo_url; // Extract the avatar URL from the JSON
+
+    // Update the src attribute of #throne-avatar with the fetched URL
+    document.getElementById('throne-avatar').src = kingAvatarUrl;
+
     king = data.data.user.web3_id;
     document.getElementById('throne-bio').replaceChildren(data.data.user.bio);
   }
+
   document.getElementById('throne-holder').replaceChildren(king);
 }
+
 
 async function checkAllowance() {
   const provider = ((window.ethereum != null) ? new ethers.providers.Web3Provider(window.ethereum) : ethers.providers.getDefaultProvider());
