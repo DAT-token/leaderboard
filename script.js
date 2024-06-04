@@ -496,8 +496,9 @@ async function approve() {
   const signer = provider.getSigner();
   const address = await signer.getAddress();
   const contract = new ethers.Contract(datAddress, datAbi, signer);
+  const options = { gasLimit: 33000 }
   const need = document.getElementById('throne-input').value;
-  const res = await contract.approve(contractAddress, ethers.utils.parseEther(need));
+  const res = await contract.approve(contractAddress, ethers.utils.parseEther(need), options);
   document.getElementById('approve-dat').disabled = true;
 }
 
@@ -507,8 +508,9 @@ async function dethrone () {
   await provider.send('eth_requestAccounts', [])
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
+  const options = { gasLimit: 33000 }
   const value = document.getElementById('throne-input').value;
-  const res = await contract.dethrone(ethers.utils.parseEther(value));
+  const res = await contract.dethrone(ethers.utils.parseEther(value), options);
   // const a = document.createElement('a')
   // a.title = 'Waiting for tx'
   // a.target = 'about:blank'
