@@ -401,7 +401,7 @@ datAbi = [
   ];
 
 async function checkChain () {
-  const targetNetworkId = '0x1ed816'
+  const targetNetworkId = '0x134d7c4'
   // const targetNetworkId = '0x539'
   const currentChainId = await window.ethereum.request({
 	      method: 'eth_chainId'
@@ -418,7 +418,7 @@ async function checkChain () {
 }
 
 async function changeChain () {
-  const targetNetworkId = '0x1ed816'
+  const targetNetworkId = '0x134d7c4'
   await window.ethereum.request({
 	  method: 'wallet_switchEthereumChain',
 	  params: [{ chainId: targetNetworkId }]
