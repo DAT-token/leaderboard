@@ -510,7 +510,6 @@ async function dethrone () {
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
   const options = { gasPrice: ethers.utils.parseUnits('0.021', 'gwei'), gasLimit: 1000000 }
-  const options = {}
   const value = document.getElementById('throne-input').value;
   const res = await contract.dethrone(ethers.utils.parseEther(value), options);
   // const a = document.createElement('a')
