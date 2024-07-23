@@ -1,4 +1,4 @@
-contractAddress = '0xd543281730737Cb4af795c69798356EE910C0De1';
+contractAddress = '0x8FE985270bC19a1E87ddec7180ca34d59bF010Ff';
 datAddress ='0x141341F87879ff59174577444cF5EB647F9830eb';
 abi = [
     {
@@ -496,7 +496,7 @@ async function approve() {
   const signer = provider.getSigner();
   const address = await signer.getAddress();
   const contract = new ethers.Contract(datAddress, datAbi, signer);
-  const options = { gasPrice: 50000000000 }
+  // const options = { gasPrice: 50000000000 }
   const need = document.getElementById('throne-input').value;
   const res = await contract.approve(contractAddress, ethers.utils.parseEther(need), options);
   document.getElementById('approve-dat').disabled = true;
@@ -508,7 +508,7 @@ async function dethrone () {
   await provider.send('eth_requestAccounts', [])
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
-  const options = { gasPrice: ethers.utils.parseUnits('100', 'gwei'), gasLimit: 1000000 }
+  // const options = { gasPrice: ethers.utils.parseUnits('100', 'gwei'), gasLimit: 1000000 }
   const value = document.getElementById('throne-input').value;
   const res = await contract.dethrone(ethers.utils.parseEther(value), options);
   // const a = document.createElement('a')
