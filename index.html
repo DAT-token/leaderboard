@@ -84,7 +84,7 @@
     <script>
 document.addEventListener("DOMContentLoaded", function () {
     // URL of your JSON data
-    const apiUrl = "https://sepolia-explorer.testnet.debank.com/api?module=token&action=getTokenHolders&contractaddress=0xb82AfB40E983262B41beDe35e9f6Fe2E078E5436";
+    const apiUrl = "https://scan.dbkchain.io/api?module=token&action=getTokenHolders&contractaddress=0x8FE985270bC19a1E87ddec7180ca34d59bF010Ff";
 
     // Get the table body element
     const tableBody = document.getElementById("data-table-body");
@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Loop through the data and create table rows
                         result.forEach((item) => {
                             // Check if the address is not in the exclusion list
-                            if (item.address !== "0x244829addd13a35c6529959f7cdb72d516028bc1" && item.address !== "0x1c3cc056113e46760259f40d4e35b9afb59c3917") {
+                            if (item.address !== "0x244829addd13a35c6529959f7cdb72d516028bc1" && item.address !== "0x1bea424c98333516e333A0fd60FEaa238220a211") {
                                 counter++; // Increment the counter for each valid row
                                 const row = document.createElement("tr");
                                 const valueInBillions = Math.floor(parseInt(item.value) / 1000000000000000000); // Divide and round down
