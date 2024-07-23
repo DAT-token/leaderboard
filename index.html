@@ -107,7 +107,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         // Loop through the data and create table rows
                         result.forEach((item) => {
                             // Check if the address is not in the exclusion list
-                            if (item.address !== "0x244829addd13a35c6529959f7cdb72d516028bc1" && item.address !== "0x5bB73e04b810527B14b87c37EFf3d62481f2D416" && item.address !== "0x1bea424c98333516e333A0fd60FEaa238220a211") {
+                            if (item.address !== "0x244829addd13a35c6529959f7cdb72d516028bc1" && item.address !== "0x5bb73e04b810527b14b87c37eff3d62481f2d416" && item.address !== "0x1bea424c98333516e333a0fd60feaa238220a211") {
                                 counter++; // Increment the counter for each valid row
                                 const row = document.createElement("tr");
                                 const valueInBillions = Math.floor(parseInt(item.value) / 1000000000000000000); // Divide and round down
