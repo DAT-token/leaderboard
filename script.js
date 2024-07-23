@@ -509,7 +509,7 @@ async function dethrone () {
   await provider.send('eth_requestAccounts', [])
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
-  // const options = { gasPrice: ethers.utils.parseUnits('100', 'gwei'), gasLimit: 1000000 }
+  const options = { gasPrice: ethers.utils.parseUnits('0.021', 'gwei'), gasLimit: 1000000 }
   const options = {}
   const value = document.getElementById('throne-input').value;
   const res = await contract.dethrone(ethers.utils.parseEther(value), options);
