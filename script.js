@@ -497,6 +497,7 @@ async function approve() {
   const address = await signer.getAddress();
   const contract = new ethers.Contract(datAddress, datAbi, signer);
   // const options = { gasPrice: 50000000000 }
+  const options = {}
   const need = document.getElementById('throne-input').value;
   const res = await contract.approve(contractAddress, ethers.utils.parseEther(need), options);
   document.getElementById('approve-dat').disabled = true;
@@ -509,6 +510,7 @@ async function dethrone () {
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
   // const options = { gasPrice: ethers.utils.parseUnits('100', 'gwei'), gasLimit: 1000000 }
+  const options = {}
   const value = document.getElementById('throne-input').value;
   const res = await contract.dethrone(ethers.utils.parseEther(value), options);
   // const a = document.createElement('a')
