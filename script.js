@@ -544,8 +544,9 @@ async function getNewKing () {
   const signer = provider.getSigner()
   const contract = new ethers.Contract(contractAddress, abi, signer)
   contract.on('NewKing', (king) => {
-	  console.log(king)
+	  console.log(king);
 	  this.getKing();
+	  this.getAmount();
   })
 }
 
